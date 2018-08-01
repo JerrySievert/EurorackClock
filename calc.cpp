@@ -1,5 +1,6 @@
 #include <arduino.h>
 
+
 #include "calc.h"
 #include "config.h"
 
@@ -18,7 +19,7 @@ float calculatedPercentage (int value) {
   return percent;
 }
 
-float tickDuration (float bpm) {
+float tickDuration (int bpm) {
   return 60000 / bpm;
 }
 

@@ -11,6 +11,14 @@ int count = 0;
 // timer
 SimpleTimer timer;
 
+int analogMultiRead(int port) {
+  int total = 0;
+  for (int i = 0; i < 10; i++) {
+    total += analogRead(port);
+  }
+
+  return (int) total / 10;
+}
 
 void cycleOff() {
   digitalWrite(WHOLE, LOW);
@@ -27,13 +35,13 @@ void cycleOff() {
 
 /*
 1. * * * *
-2. *      
-3. * *    
-4. *      
-5. * * *  
-6. *      
-7. * *    
-8. *      
+2. *
+3. * *
+4. *
+5. * * *
+6. *
+7. * *
+8. *
  */
 
 void cycleOn() {
@@ -57,7 +65,7 @@ void cycleOn() {
     case 3:
       digitalWrite(WHOLE, HIGH);
       break;
-  
+
     case 4:
       digitalWrite(WHOLE, HIGH);
       digitalWrite(HALF, HIGH);
@@ -79,9 +87,9 @@ void cycleOn() {
   }
 
   // figure out bpm and duration values
-  int bpm_pot = analogRead(BPM);
-  int duration_pot = analogRead(DURATION);
-  float bpm = calculatedBPM(bpm_pot);
+  int bpm_pot = analogMultiRead(BPM);
+  int duration_pot = analogMultiRead(DURATION);
+  int bpm = round(calculatedBPM(bpm_pot));
   float percentage = calculatedPercentage(duration_pot);
   unsigned long duration = tickDuration(bpm * 2);
 
@@ -129,11 +137,11 @@ void setup() {
 #endif
 
 #if DEBUG
-  int val = analogRead(BPM);
+  int val = analogMultiRead(BPM);
   Serial.print("BPM Read: ");
   Serial.println(val);
   Serial.print("Calculated BPM: ");
-  Serial.println(calculatedBPM(val));
+  Serial.println(round(calculatedBPM(val)));
 #endif
 }
 

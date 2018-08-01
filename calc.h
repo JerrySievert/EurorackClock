@@ -2,5 +2,5 @@
 
 float calculatedBPM (int);
 float calculatedPercentage (int);
-float tickDuration (float);
+float tickDuration (int);
 char *ftoa (char *, float, int);
