@@ -28,6 +28,9 @@ of physical outputs:
 * 1/2 BPM - a pulse for every other beat
 * 1/4 BPM - a pulse for every fourth beat
 * 1/8 BPM - a pulse for every eighth beat
+* 1/16 BPM - a pulse for every sixteenth beat
+* swing C
+* swing E
 
 Since each of these can be connected to any number of physical outputs, these
 are treated very simply.
