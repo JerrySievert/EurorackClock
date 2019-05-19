@@ -15,9 +15,9 @@ void setup_display ( ) {
   display.display();
 }
 
-void display_bpm (float bpm) {
+void display_bpm (int bpm) {
   char str[24];
-  ftoa(str, bpm, 2);
+  itoa(str, bpm, 2);
 
   display.setCursor(0, 16);
   display.setTextSize(2);

@@ -21,71 +21,56 @@ int analogMultiRead(int port) {
 }
 
 void cycleOff() {
-  digitalWrite(WHOLE, LOW);
-  digitalWrite(HALF, LOW);
-  digitalWrite(QUARTER, LOW);
-  digitalWrite(EIGHTH, LOW);
+  digitalWrite(NOTE_16, LOW);
+  digitalWrite(NOTE_8, LOW);
+  digitalWrite(NOTE_4, LOW);
+  digitalWrite(NOTE_2, LOW);
+  digitalWrite(NOTE_1, LOW);
+  digitalWrite(LED_1, LOW);
 
   count++;
 
-  if (count == 8) {
+  if (count == 16) {
     count = 0;
   }
 }
 
+void cycleOnC() {
+  digitalWrite(NOTE_C, HIGH);
+}
+
+void cycleOffC() {
+  digitalWrite(NOTE_C, LOW);
+}
+
+void cycleOnE() {
+  digitalWrite(NOTE_E, HIGH);
+}
+
+void cycleOffE() {
+  digitalWrite(NOTE_E, LOW);
+}
+
 /*
-1. * * * *
-2. *
-3. * *
-4. *
-5. * * *
-6. *
-7. * *
-8. *
+ 0. * * * * *
+ 1. *
+ 2. * *
+ 3. *
+ 4. * * *
+ 5. *
+ 6. * *
+ 7. *
+ 8. * * * *
+ 9. *
+10. * *
+11. *
+12. * * *
+13. *
+14. * *
+15. *
  */
 
 void cycleOn() {
-  switch (count) {
-    case 0:
-      digitalWrite(WHOLE, HIGH);
-      digitalWrite(HALF, HIGH);
-      digitalWrite(QUARTER, HIGH);
-      digitalWrite(EIGHTH, HIGH);
-      break;
-
-    case 1:
-      digitalWrite(WHOLE, HIGH);
-      break;
-
-    case 2:
-      digitalWrite(WHOLE, HIGH);
-      digitalWrite(HALF, HIGH);
-      break;
-
-    case 3:
-      digitalWrite(WHOLE, HIGH);
-      break;
-
-    case 4:
-      digitalWrite(WHOLE, HIGH);
-      digitalWrite(HALF, HIGH);
-      digitalWrite(QUARTER, HIGH);
-      break;
-
-    case 5:
-      digitalWrite(WHOLE, HIGH);
-      break;
-
-    case 6:
-      digitalWrite(WHOLE, HIGH);
-      digitalWrite(HALF, HIGH);
-      break;
-
-    case 7:
-      digitalWrite(WHOLE, HIGH);
-      break;
-  }
-
   // figure out bpm and duration values
   int bpm_pot = analogMultiRead(BPM);
   int duration_pot = analogMultiRead(DURATION);
@@ -99,9 +84,112 @@ void cycleOn() {
   // figure out the next cycle on and set it based on bpm
   unsigned long next_stop = (unsigned long) (duration * percentage);
 
+  // figure out the offsets for C and E
+  unsigned long c_offset = (unsigned long) (duration * 0.16);
+  unsigned long e_offset = (unsigned long) (duration * 0.32);
+
   // set the timers
   timer.setTimeout(next_start, cycleOn);
   timer.setTimeout(next_stop, cycleOff);
+
+  if (count % 2) {
+    // odd click
+    timer.setTimeout(c_offset, cycleOnC);
+    timer.setTimeout(e_offset, cycleOnE);
+    timer.setTimeout(next_stop + c_offset, cycleOffC);
+    timer.setTimeout(next_stop + e_offset, cycleOffE);
+  } else {
+    // even click
+    timer.setTimeout(next_start, cycleOnC);
+    timer.setTimeout(next_start, cycleOnE);
+    timer.setTimeout(next_stop, cycleOffC);
+    timer.setTimeout(next_stop, cycleOffE);
+    digitalWrite(NOTE_C, HIGH);
+    digitalWrite(NOTE_E, HIGH);
+    digitalWrite(LED_1, HIGH);
+  }
+
+
+  switch (count) {
+    case 0:
+      digitalWrite(NOTE_16, HIGH);
+      digitalWrite(NOTE_8, HIGH);
+      digitalWrite(NOTE_4, HIGH);
+      digitalWrite(NOTE_2, HIGH);
+      digitalWrite(NOTE_1, HIGH);
+      break;
+
+    case 1:
+      digitalWrite(NOTE_16, HIGH);
+      break;
+
+    case 2:
+      digitalWrite(NOTE_16, HIGH);
+      digitalWrite(NOTE_8, HIGH);
+      break;
+
+    case 3:
+      digitalWrite(NOTE_16, HIGH);
+      break;
+
+    case 4:
+      digitalWrite(NOTE_16, HIGH);
+      digitalWrite(NOTE_8, HIGH);
+      digitalWrite(NOTE_4, HIGH);
+      break;
+
+    case 5:
+      digitalWrite(NOTE_16, HIGH);
+      break;
+
+    case 6:
+      digitalWrite(NOTE_16, HIGH);
+      digitalWrite(NOTE_8, HIGH);
+      break;
+
+    case 7:
+      digitalWrite(NOTE_16, HIGH);
+      break;
+
+    case 8:
+      digitalWrite(NOTE_16, HIGH);
+      digitalWrite(NOTE_8, HIGH);
+      digitalWrite(NOTE_4, HIGH);
+      digitalWrite(NOTE_2, HIGH);
+      break;
+
+    case 9:
+      digitalWrite(NOTE_16, HIGH);
+      break;
+
+    case 10:
+      digitalWrite(NOTE_16, HIGH);
+      digitalWrite(NOTE_8, HIGH);
+      break;
+
+    case 11:
+      digitalWrite(NOTE_16, HIGH);
+      break;
+
+    case 12:
+      digitalWrite(NOTE_16, HIGH);
+      digitalWrite(NOTE_8, HIGH);
+      digitalWrite(NOTE_4, HIGH);
+      break;
+
+    case 13:
+      digitalWrite(NOTE_16, HIGH);
+      break;
+
+    case 14:
+      digitalWrite(NOTE_16, HIGH);
+      digitalWrite(NOTE_8, HIGH);
+      break;
+
+    case 15:
+      digitalWrite(NOTE_16, HIGH);
+      break;
+  }
 
 #if HAS_SCREEN
   display_bpm(bpm);
@@ -127,10 +215,13 @@ void setup() {
 
   pinMode(BPM, INPUT);
   pinMode(DURATION, INPUT);
-  pinMode(WHOLE, OUTPUT);
-  pinMode(HALF, OUTPUT);
-  pinMode(QUARTER, OUTPUT);
-  pinMode(EIGHTH, OUTPUT);
+  pinMode(NOTE_16, OUTPUT);
+  pinMode(NOTE_8, OUTPUT);
+  pinMode(NOTE_4, OUTPUT);
+  pinMode(NOTE_2, OUTPUT);
+  pinMode(NOTE_1, OUTPUT);
+  pinMode(NOTE_C, OUTPUT);
+  pinMode(NOTE_E, OUTPUT);
 
 #if HAS_SCREEN
   setup_display();

@@ -17,12 +17,15 @@
 #define DURATION A1
 
 // outputs
-#define WHOLE   2
-#define HALF    3
-#define QUARTER 4
-#define EIGHTH  5
-
+#define NOTE_1  3
+#define NOTE_2  5
+#define NOTE_4  6
+#define NOTE_8  9
+#define NOTE_16 10
+#define NOTE_C  11
+#define NOTE_E  12
+#define LED_1   13
 
 // screen
-#define HAS_SCREEN true
+#define HAS_SCREEN false
 #define SCREEN_ADDR 0x3c
